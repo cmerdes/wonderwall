@@ -1,14 +1,17 @@
 {
      "name": "wonderwall",
      "version": "0.0.1",
-     "description": "Interactive wall SinnerSchrader Munich",
+     "description": "Web-based multiscreen environment for different devices, based on Javascript",
      "contributors": {
           "name": "Christoph Merdes",
           "email": "christoph.merdes@sinnerschrader.com"
      },
      "dependencies": {
-          "socket.io": "*",
+          "connect" :"*",
+          "ejs": "*",
           "express": "*",
-          "mongodb": "*"
+          "mongodb": "*",
+          "mongoose": "*",
+          "socket.io": "*"
      }
 }

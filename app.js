@@ -1,21 +1,26 @@
-var express = require("express");
-//var routes = require("./routes");
-var employees = require("./routes/employees");
-
+var express = require('express');
+var http	= require('http');
 var app = express();
+var server = http.createServer(app);
 
+// Mongoose setup
+require('./db');
 
-app.use(app.router);
-app.set('views', './views');
-app.set('view engine', '')
+// Configuration
+app.configure( function (){
+	app.set('views', __dirname + '/views');
+	app.set('view engine', 'ejs');
+	app.use(express.favicon);
+	app.use(express.static(__dirname + '/public'));
+	app.use(express.logger());
+	app.use(express.bodyParser());
+	app.use(app.router);
+})
 
+var routes = require('./routes');
 
-app.get('/', employees.overview);
-//app.get('/employees', employees.overview);
-//app.get('/employees/:id', employees.employee);
+app.get('/', routes.index);
 
-//app.post
-//app.put
-//app.del
-
-app.listen(3000);
+app.listen(3000, function() {
+	console.log('Express server listening on port %d in %s mode', server.address(), app.settings.env);
+});
