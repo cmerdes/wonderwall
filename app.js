@@ -1,26 +1,44 @@
-var express = require('express');
-var http	= require('http');
-var app = express();
-var server = http.createServer(app);
-
-// Mongoose setup
+require('./config');
 require('./db');
 
+var express = require('express');
+var ejs		= require('ejs');
+var routes	= require('./routes');
+var app		= express();
+var server	= app.listen(port);
+var io 		= require('socket.io').listen(server);
+
+
 // Configuration
-app.configure( function (){
+app.configure(function(){
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'ejs');
-	app.use(express.favicon);
 	app.use(express.static(__dirname + '/public'));
 	app.use(express.logger());
 	app.use(express.bodyParser());
 	app.use(app.router);
 })
 
-var routes = require('./routes');
+app.configure( 'development', function (){
+  app.use( express.errorHandler({ dumpExceptions : true, showStack : true }));
+});
+ 
+app.configure( 'production', function (){
+  app.use( express.errorHandler());
+});
 
+
+// Routes
 app.get('/', routes.index);
 
-app.listen(3000, function() {
-	console.log('Express server listening on port %d in %s mode', server.address(), app.settings.env);
+
+// Socket
+io.sockets.on('connection', function (socket) {
+  socket.on('handshake', function () {
+    console.log('HI!');
+  });
+ socket.on('disconnect', function() { 
+    //console.log("Connection " + socket.id + " terminated."); 
+    console.log('BYE!');
+  });
 });

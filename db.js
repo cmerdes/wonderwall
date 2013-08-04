@@ -1,11 +1,11 @@
 var mongoose	= require('mongoose');
-var Schema		= mongoose.Schema;
 
-var Employee = new Schema({
+var employeeSchema = new mongoose.Schema({
 	firstname	: String,
+	lastname	: String,
 	position	: String
 })
 
-mongoose.model('Employee', Employee);
+mongoose.model('Employee', employeeSchema);
 
 mongoose.connect('mongodb://localhost/wonderwall');
