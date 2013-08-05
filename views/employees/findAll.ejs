@@ -1,0 +1,17 @@
+<!-- use a loop to show all todo items at the very bottom -->
+<b>Server IP: <%= ip %></b>
+
+<% employees.forEach( function( employee ){ %>
+  <p><%= employee.firstname %> <%= employee.lastname %></p>
+  <p><img width="200" src="/files/employees/<%= employee.firstname %>.<%= employee.lastname %>.jpg" /></p>
+<% }); %>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io.connect('http://<%= ip %>:3000');
+
+  socket.on('connect', function() {
+  	socket.emit('handshake');
+  });
+
+</script>

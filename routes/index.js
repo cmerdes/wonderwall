@@ -1,12 +1,31 @@
 var mongoose = require('mongoose');
 var Employee = mongoose.model('Employee');
 
-// query db for all todo items
+var os = require('os');
+var ip = os.networkInterfaces().en2[1].address;
+
+// delegate device to content
 exports.index = function ( req, res ){
-  Employee.find( function ( err, employees, count ){
-    res.render( 'index', {
-        title : 'Express Todo Example',
-        employees : employees
-    });
-  });
+
+
+	//var id = req.params.id;
+
+	Employee.find( function ( err, employees ){
+
+		var employeeMap = new Array();
+
+		employees.forEach(function(employee) {
+			employeeMap.push(employee);
+		})
+
+		//console.log(employeeMap[req.params.id].lastname);
+
+		res.render( 'index', {
+    		'title' : 'Single employee',
+    		'employees': employeeMap,
+    		//'firstname' : employeeMap[req.params.id].firstname,
+    		//'lastname' : employeeMap[req.params.id].lastname,
+    		'ip' : ip
+    	});
+	});
 };

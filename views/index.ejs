@@ -1,18 +1,36 @@
-<!-- use a loop to show all todo items at the very bottom -->
-<% employees.forEach( function( employee ){ %>
-  <p><%= employee.firstname %> <%= employee.lastname %></p>
-<% }); %>
-
+Hello World!
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  var socket = io.connect('http://10.0.1.105:3000');
+  var socket = io.connect('http://<%= ip %>:3000');
 
-  socket.on('connect', function() {
-  	socket.emit('handshake');
-  });
+	socket.on('connect', function() {
+  		socket.emit('init');
+  		console.log('init');
+  	});
 
-  socket.on('disconnect', function() {
-  	socket.emit('dehandshake');
-  });
+  	String.prototype.killWhiteSpace = function() {
+    	return this.replace(/\s/g, '');
+	};
 
+  	socket.on('showContent', function(data) {
+  		console.log('showContent');
+  		console.log(data.arrayPosition);
+  		//window.location.href = '/employees/' + data.arrayPosition;
+  		var jsontext = '<%= employees %>'.killWhiteSpace();
+  		//var employees = JSON.parse(jsontext);
+  		//console.log(employees);
+  		document.getElementById('firstname').innerHTML = data.arrayPosition;
+  	});
 </script>
+
+<!-- use a loop to show all todo items at the very bottom -->
+<b>Server IP: <%= ip %></b>
+
+<% employees.forEach( function( employee ){ %>
+  <p><%= employee.firstname %> <%= employee.lastname %></p>
+  <p><img width="200" src="/files/employees/<%= employee.firstname %>.<%= employee.lastname %>.jpg" /></p>
+<% }); %>
+
+<div class="employee">
+	<p id="firstname">Firstname</p>
+</div>

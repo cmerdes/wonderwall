@@ -12,6 +12,7 @@
           "express": "*",
           "mongodb": "*",
           "mongoose": "*",
-          "socket.io": "*"
+          "socket.io": "*",
+          "underscore": "*"
      }
 }
