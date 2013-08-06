@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var os = require('os');
 var Employee = mongoose.model('Employee');
 
-var ip = os.networkInterfaces().en2[1].address;
+var ip = os.networkInterfaces().en0[1].address;
 
 
 

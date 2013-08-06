@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>API index</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8">
+  </head>
+  <body>
+    <section id="api">
+      <h1>Web Services...</h1>
+      <form action="" method="post" accept-charset="utf-8" id="webservice">
+          <table class="cols5">
+              <tbody><tr>
+                  <th class="first"><strong>Resource</strong></th>
+                  <th><strong>POST</strong><br>(create)</th>
+                  <th><strong>GET</strong><br>(read)</th>
+                  <th><strong>PUT</strong><br>(update)</th>
+                  <th><strong>DELETE</strong><br>(delete)</th>
+              </tr>
+              <tr>
+                  <td class="first"><strong>/employees</strong></td>
+                  <td>create a new employee</td>
+                  <td>list employees</td>
+                  <td>bulk update employees</td>
+                  <td>delete all employees</td>
+              </tr>
+              <tr>
+                  <td class="first"><em>Choose...</em></td>
+                  <td><input type="radio" name="service" value="post_employees" id="post_employees"></td>
+                  <td><input type="radio" name="service" value="get_employees" id="get_employees"></td>
+                  <td><input type="radio" name="service" value="update_employees" id="update_employees"></td>
+                  <td><input type="radio" name="service" value="delete_employees" id="delete_employees"></td>
+              </tr>
+              <tr>
+                  <td class="first"><strong>/employees/1234</strong></td>
+                  <td>error</td>
+                  <td>show 1234</td>
+                  <td>if exists update 1234, else error</td>
+                  <td>delete 1234</td>
+              </tr>
+              <tr>
+                  <td class="first"><em>ID:</em><input type="text" name="_id" value="" id="_id"></td>
+                  <td><input type="radio" name="service" value="post_error" id="post_error"></td>
+                  <td><input type="radio" name="service" value="get_employee" id="get_employee"></td>
+                  <td><input type="radio" name="service" value="update_employee" id="update_employee"></td>
+                  <td><input type="radio" name="service" value="delete_employee" id="delete_employee"></td>
+              </tr>
+            <tr>
+          </tbody></table>
+          <em>Post Content:</em>
+          <br />
+          <textarea name="post_content" rows="8" cols="100"></textarea>
+          <br />
+          <input type="submit" name="submit" value="submit" id="submit"> 
+          Or
+          <input type="button" name="add_fixtures" value="Add employee fixtures" id="add_fixtures">
+      </form>
+    </section>
+    <section>
+        <em>Web service output:</em>
+        <br />
+        <textarea id="output" name="output" rows="8" cols="100"></textarea>
+    </section>
+    <section id="container">
+      <h1>Employee List</h1>
+      <a href="/#list">click to show employees</a>
+    </section> <!-- /container -->
+
+    <script type="text/template" id="employee-template">
+        <p><a href="employees/{{_id}}">{{firstname}}</a></p>
+        <p>{{lastname}}</p>
+        <p>{{position}}</p>
+        <p>ID: {{_id}}</p>
+    </script>
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/underscore.min.js"></script>
+    <script src="/js/backbone.min.js"></script>
+    <script src="/js/mustache.js"></script>
+    <script src="/js/frontend.js"></script>
+    <script src="/js/webservice.js"></script>
+
+  </body>
+</html>

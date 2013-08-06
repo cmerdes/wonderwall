@@ -2,7 +2,8 @@ var mongoose = require('mongoose');
 var Employee = mongoose.model('Employee');
 
 var os = require('os');
-var ip = os.networkInterfaces().en2[1].address;
+console.log(os.networkInterfaces().en0[1].address);
+var ip = os.networkInterfaces().en0[1].address;
 
 // delegate device to content
 exports.index = function ( req, res ){
