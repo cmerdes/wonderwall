@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="/css/style.css">
+	</head>
+	<body>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/js/jquery.min.js"></script>
+
+		<script type="text/javascript">
+			$(document).ready(function() 
+			{
+				var url		= 'http://172.16.90.94:3000/';
+				var socket	= io.connect(url);
+
+				socket.on('showcontent', function(msg)
+				{
+					$.ajax(
+					{
+				  		url: url + 'api/employees',
+				  		success: function(data)
+				  		{
+				  			// iPhone Fix
+				  			var height = window.innerHeight ? window.innerHeight : $(window).height();
+
+				    		$('#content').html('<img width="' + height + '" src="/files/employees/' + data[msg.position]['firstname'].toLowerCase() + '.' + data[msg.position]['lastname'].toLowerCase() + '.jpg" />');
+
+				    		$('#description').html(data[msg.position]['firstname'] + ' ' + data[msg.position]['lastname']);
+				    	}
+					});
+				})
+			});
+			
+		</script>
+
+		<p id="description">
+
+		</p>
+
+		<p id="content">
+			placeholder
+		</p>
+	</body>
+</html>
+

@@ -1,63 +1,62 @@
-//require('./config');
-//require('./db');
+var _						=	require('underscore');
+var express     = require('express');
+var mongoose    = require('mongoose');
+var app         = express();
+var server			= require('http').createServer(app);
+var io          = require('socket.io').listen(server);
+var devices			= new Array();
 
-var express		= require('express');
-var mongoose	= require('mongoose');
-var app			= express();
 
+
+/* Express Configuration */
+
+// Setup
+app.configure(function(){
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(app.router);
+  app.use(express.static(__dirname + '/public'));
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+})
+
+server.listen(3000);
+
+
+
+/* Database Configuration */
 
 // Setup
 mongoose.connect('mongodb://localhost/wonderwall');
-
-
-//var ejs		= require('ejs');
-//var routes	= require('./routes');
-//var employees = require('./routes/employees');
-
-// SOCKET.IO
-//var server	= app.listen(port);
-//var io 		= require('socket.io').listen(server);
-
-//var devices = new Array();
-
-
-// Express configuration
-app.configure(function(){
-	app.use(express.bodyParser());
-	app.use(express.methodOverride());
-	app.use(app.router);
-	app.use(express.static(__dirname + '/public'));
-	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-})
 
 // Mongoose configuration
 var Schema = mongoose.Schema;
 
 var Employee = new Schema({
-	firstname: { type: String },
-	lastname: { type: String },
-	position: { type: String }
+    firstname: { type: String },
+    lastname: { type: String },
+    position: { type: String }
 });
 
 var EmployeeModel = mongoose.model('Employee', Employee);
+
 
 
 /* Routes */
 
 // API status
 app.get('/api', function(req, res) {
-	res.send('Wonderwall API is running');
+    res.send('Wonderwall API is running');
 });
 
 // READ (list)
 app.get('/api/employees', function (req, res){
-  	return EmployeeModel.find(function (err, employees) {
-    	if (!err) {
-      		return res.send(employees);
-    	} else {
-      		return console.log(err);
-    	}
-  	});
+    return EmployeeModel.find(function (err, employees) {
+        if (!err) {
+            return res.send(employees);
+        } else {
+            return console.log(err);
+        }
+    });
 });
 
 // READ (single)
@@ -73,25 +72,25 @@ app.get('/api/employees/:id', function (req, res){
 
 // CREATE
 app.post('/api/employees', function (req, res){
-  	var employee;
-  	console.log("POST: ");
-  	console.log(req.body);
+    var employee;
+    console.log("POST: ");
+    console.log(req.body);
 
-  	employee = new EmployeeModel({
-    	firstname: req.body.firstname,
-    	lastname: req.body.lastname,
-    	position: req.body.position,
-  	});
+    employee = new EmployeeModel({
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        position: req.body.position,
+    });
 
-  	employee.save(function (err) {
-    	if (!err) {
-      		return console.log("created");
-    	} else {
-      		return console.log(err);
-    	}
-  	});
+    employee.save(function (err) {
+        if (!err) {
+            return console.log("created");
+        } else {
+            return console.log(err);
+        }
+    });
 
-  	return res.send(employee);
+    return res.send(employee);
 });
 
 // UPDATE
@@ -127,41 +126,42 @@ app.delete('/api/employees/:id', function (req, res){
 
 
 
-
-//app.get('/employees', employees.findAll);
-//app.get('/employees/:id', employees.findById);
-
-app.listen(3000);
-
+/* Websocket  */
 
 // Socket
-/*io.sockets.on('connection', function (client) {
+io.sockets.on('connection', function (client) 
+{
+    console.log("Client joined: Client " + client.id);
+    console.log("Clients (total): " + io.sockets.clients());
 
-   client.on('init', function(msg) {
+    
 
-      console.log("client.id: " + (client.id));
-      console.log("devices: " + devices);
+    // Add client to device array when connecting
+    if (!_.findWhere(devices, {id: client.id}))
+    {
+    	devices.push(client);
+    	console.log("Client pushed: Client " + client.id);
+    	console.log("Devices: " + devices.length);
 
-      if (devices.indexOf(client.id)) {
-         devices.push(client.id); 
-         console.log('pushed');
-      };
-      //console.log("IP: " + (client.handshake.address.address));
-
-      client.emit('showContent', {'arrayPosition': devices.indexOf(client.id)});
-   });
-
-
-
- client.on('disconnect', function() { 
-
-    console.log('BYE!');
-
-    if (devices.indexOf(client.id)) {
-      devices.splice(devices.indexOf(client.id), 1);
-
-      console.log("pulled: " + client.id);
-      console.log("devices: " + devices);
+    	client.emit('showcontent', {position: _.indexOf(devices, client)});
+    	console.log('Position: ' + _.indexOf(devices, client));
+    } 
+    else
+    {
+    	console.log("Client " + client.id + "is already in.");
+    	console.log("Devices: " + devices.length);
     }
-  });
-});*/
+
+    // remove client from device array when disconneting
+    client.on('disconnect', function() 
+    {   
+        console.log("Client left: Client " + client.id);
+        devices = _.without(devices, client);
+        console.log("Client removed: Client " + client.id);
+        console.log("Devices: " + devices.length);
+    });
+});
+
+
+
+
